@@ -7,7 +7,7 @@ import (
 )
 
 func index(w http.ResponseWriter, r *http.Request){
-	t, err := template.ParseFiles("templates/index.html", "templates/header.html", "templates/footer.html")
+	t, err := template.ParseFiles("templates/index.html", "templates/footer.html", "templates/header.html")
 
 	if err != nil{
 		fmt.Fprintf(w, err.Error())
@@ -16,10 +16,21 @@ func index(w http.ResponseWriter, r *http.Request){
 	t.ExecuteTemplate(w, "index", nil)
 }
 
+func create(w http.ResponseWriter, r *http.Request){
+	t, err := template.ParseFiles("templates/create.html", "templates/footer.html", "templates/header.html")
+
+	if err != nil{
+		fmt.Fprintf(w, err.Error())
+	}
+
+	t.ExecuteTemplate(w, "create", nil)
+}
 
 func handleFunc(){
+	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./static/"))))
 	http.HandleFunc("/", index)
-	http.ListenAndServe("127.0.0.1:8080", nil)
+	http.HandleFunc("/create", create)
+	http.ListenAndServe("127.0.0.1:8008", nil)
 }
 
 func main(){
